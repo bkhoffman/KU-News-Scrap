@@ -49,7 +49,7 @@ app.get("/scrape", (req, res) => {
         link: link
       });
       // Create a new Article using the `result` object built from scraping
-      db.Article.create(result)
+      db.Article.create(results)
         .then(function(dbArticle) {
           // View the added result in the console
           console.log(dbArticle);
@@ -60,10 +60,24 @@ app.get("/scrape", (req, res) => {
         });
     })
     console.log(results);
+    res.send("Scrape Complete");
   })
+  res.render("index");
 })
 
-
+// Route for getting all Articles from the db
+app.get("/articles", function(req, res) {
+  // Grab every document in the Articles collection
+  db.Article.find({})
+    .then(function(dbArticle) {
+      // If we were able to successfully find Articles, send them back to the client
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      // If an error occurred, send it to the client
+      res.json(err);
+    });
+});
 
 
 
