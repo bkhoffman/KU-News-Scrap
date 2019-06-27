@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config();
 const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
@@ -36,10 +36,20 @@ app.set('view engine', 'handlebars');
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 //Routes
-
+//GET route to scrape the KU website
 app.get("/scrape", (req, res) => {
   axios.get("http://www2.kusports.com/news/mens_basketball/").then(response => {
     const $ = cherrio.load(response.data);
+    const results = []; //use {} for object?
+    $("h4").each(function(i, element){
+      let title = $(element).find("a").text();
+      let link = $(element).find("a").attr("href");
+      results.push({
+        title: title,
+        link: link
+      });
+    })
+    console.log(results);
   })
 })
 
