@@ -39,7 +39,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 //GET route to scrape the KU website
 app.get("/scrape", (req, res) => {
   axios.get("http://www2.kusports.com/news/mens_basketball/").then(response => {
-    const $ = cherrio.load(response.data);
+    const $ = cheerio.load(response.data);
     const results = []; //use {} for object?
     $("h4").each(function(i, element){
       let title = $(element).find("a").text();
@@ -48,6 +48,16 @@ app.get("/scrape", (req, res) => {
         title: title,
         link: link
       });
+      // Create a new Article using the `result` object built from scraping
+      db.Article.create(result)
+        .then(function(dbArticle) {
+          // View the added result in the console
+          console.log(dbArticle);
+        })
+        .catch(function(err) {
+          // If an error occurred, log it
+          console.log(err);
+        });
     })
     console.log(results);
   })
