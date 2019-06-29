@@ -39,12 +39,19 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 //GET route to scrape the KU website
 app.get("/scrape", (req, res) => {
   axios.get("http://www2.kusports.com/news/mens_basketball/").then(response => {
+    console.log("res data: " +response.data);
     const $ = cheerio.load(response.data);
-    const results = {}; //use {} for object
-    $("h4").each(function(i, element){
-      let title = $(element).find("a").text();
-      let summary = $(element).find("p").text();
-      let link = $(element).find("a").attr("href");
+    const results = []; //use {} for object
+    // $("h4").each(function(i, element){
+    //   let title = $(element).find("a").text();
+    //   let summary = $(element).find("p").text();
+    //   let link = $(element).find("a").attr("href");
+
+      $("div.item").each(function(i, element){
+        let title = $(element).children("h4").children("a").text();
+        let summary = $(element).find("p").text();
+        let link = $(element).find("a").attr("href");
+
       results.push({
         title: title,
         summary: summary, //can't find since it's not in the h4 tag
@@ -64,7 +71,7 @@ app.get("/scrape", (req, res) => {
     console.log(results);
     res.send("Scrape Complete");
   })
-  // res.render("index");
+  res.render("index");
 })
 
 // Route for getting all Articles from the db
@@ -79,6 +86,24 @@ app.get("/articles", function(req, res) {
       // If an error occurred, send it to the client
       res.json(err);
     });
+});
+
+// Clear the DB
+app.get("/clearall", function(req, res) {
+  // Remove every note from the notes collection
+  db.Article.remove({}, function(error, response) {
+    // Log any errors to the console
+    if (error) {
+      console.log(error);
+      res.send(error);
+    }
+    else {
+      // Otherwise, send the mongojs response to the browser
+      // This will fire off the success function of the ajax request
+      console.log(response);
+      res.send(response);
+    }
+  });
 });
 
 // HTML routes

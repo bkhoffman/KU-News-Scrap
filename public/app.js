@@ -20,7 +20,8 @@ $.getJSON("/articles", (data) => {
       cardBody.html(data[i].link);
 
       let saveButton = $("<button>").addClass("btn-saveArt").text("Save Article");
-
+      // saveButton.data("_id", article._id);//adds the article id to the button so it knows which article to save
+      
       card.append(cardHeader, cardBody, saveButton);
       $("#articles").append(card);
   }
