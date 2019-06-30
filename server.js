@@ -42,36 +42,35 @@ app.get("/scrape", (req, res) => {
     console.log("res data: " +response.data);
     const $ = cheerio.load(response.data);
     const results = []; //use {} for object
-    // $("h4").each(function(i, element){
-    //   let title = $(element).find("a").text();
-    //   let summary = $(element).find("p").text();
-    //   let link = $(element).find("a").attr("href");
 
-      $("div.item").each(function(i, element){
-        let title = $(element).children("h4").children("a").text();
-        let summary = $(element).find("p").text();
-        let link = $(element).find("a").attr("href");
-
-      results.push({
-        title: title,
-        summary: summary, //can't find since it's not in the h4 tag
-        link: link
-      });
-      // Create a new Article using the `result` object built from scraping
-      db.Article.create(results)
-        .then(function(dbArticle) {
-          // View the added result in the console
-          console.log(dbArticle);
-        })
-        .catch(function(err) {
-          // If an error occurred, log it
-          console.log(err);
+    $(".story_list div.item").each(function(i, element){
+      let title = $(element).children("h4").children("a").text();
+      let summary = $(element).find("p").text();
+      let link = $(element).find("a").attr("href");
+      //make sure article has title, summary and link before pusing
+      if (title && summary && link) {
+          results.push({
+          title: title,
+          summary: summary, 
+          link: link
         });
-    })
+      }
+      // Create a new Article using the `result` object built from scraping
+    });
+
+    db.Article.create(results)
+      .then(function(dbArticle) {
+        // View the added result in the console
+        console.log(dbArticle);
+        res.redirect("/");
+      })
+      .catch(function(err) {
+        // If an error occurred, log it
+        console.log(err);
+        res.send(err);
+      });
     console.log(results);
-    res.send("Scrape Complete");
   })
-  res.render("index");
 })
 
 // Route for getting all Articles from the db

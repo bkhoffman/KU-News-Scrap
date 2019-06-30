@@ -5,22 +5,21 @@ $.getJSON("/articles", (data) => {
     console.log("numb of articles: " + data.length)
     let card = $("<div>");
       card.addClass("card article");
-      card.attr("data-id='" + data[i]._id);
-      card.attr("data-title", + data[i].title);
-      card.attr("data-summary", + data[i].summary);
-      card.attr("data-link", + data[i].link);
-      // card.attr("data-image", data[i].img);
-
+     
       let cardHeader = $("<div>").addClass("card-header");
-      cardHeader.text(data[i].title);
+      let link = $('<a>');
+      link.attr('href', 'http://www2.kusports.com/' + data[i].link);
+      link.text(data[i].title);
+      cardHeader.html(link);
 
       let cardBody = $("<div>").addClass("card-body");
       cardBody.text(data[i].summary);
       console.log("summary: "+ data[i].summary)
-      cardBody.html(data[i].link);
 
-      let saveButton = $("<button>").addClass("btn-saveArt").text("Save Article");
-      // saveButton.data("_id", article._id);//adds the article id to the button so it knows which article to save
+      let saveButton = $("<button>")
+      saveButton.attr('data-id', data[i]._id);
+      saveButton.addClass("btn-saveArt").text("Save Article");
+      saveButton.attr('data-test', 'test');
       
       card.append(cardHeader, cardBody, saveButton);
       $("#articles").append(card);
@@ -37,7 +36,6 @@ $(document).on("click", "#scrape", function(){
   })
 })
 
-$(document).on("click", "#home", function(){
-  console.log("Home button pushed");
-  res.render("index");
-});
+// $(document).on("click", "#saved", function(){
+//   console.log("Saved Articles button pushed");
+// });
