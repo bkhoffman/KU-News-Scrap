@@ -49,6 +49,13 @@ $(document).on("click", ".btn-saveArt", function() {
   })
 });
 
-// $(document).on("click", "#saved", function(){
-//   console.log("Saved Articles button pushed");
-// });
+// Delete Article button
+$(document).on("click", ".delete", function() {
+  var thisId = $(this).attr("data-id");
+  $.ajax({
+      method: "POST",
+      url: "/articles/delete/" + thisId
+  }).done(function(data) {
+      window.location = "/saved"
+  })
+});

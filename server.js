@@ -138,6 +138,20 @@ app.get("/saved", function(req, res) {
   });
 });
 
+// Delete an article
+app.post("/articles/delete/:id", function(req, res) {
+  // Use the article id to find and update its saved boolean
+  db.Article.findOneAndUpdate({ "_id": req.params.id }, {"saved": false, "notes": []})
+  .then(function(dbArticle) {
+    // Log any errors
+    res.json(dbArticle);
+  })
+  .catch(function(err) {
+    // If an error occurred, send it to the client
+    res.json(err);
+  });
+});
+
 // HTML routes
 app.get('/', (req, res) => {
   res.render('index');
