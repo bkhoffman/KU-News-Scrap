@@ -18,7 +18,8 @@ $.getJSON("/articles", (data) => {
 
       let saveButton = $("<button>")
       saveButton.attr('data-id', data[i]._id);
-      saveButton.addClass("btn-saveArt").text("Save Article");
+      // saveButton.addClass("btn-saveArt").text("Save Article");
+      saveButton.addClass("btn btn-success btn-saveArt").text("Save Article");
       saveButton.attr('data-test', 'test');
       
       card.append(cardHeader, cardBody, saveButton);

@@ -24,3 +24,10 @@ body{
 #clearAll{
   float: right;
 }
+#savedHeader{
+  margin-bottom: 2%;
+}
+.btn-saveArt{
+  margin: 2%;
+  width: 150px;
+}

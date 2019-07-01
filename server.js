@@ -129,17 +129,14 @@ app.post("/articles/save/:id", function(req, res) {
   });
 });
 
-//save article route
-// app.get('/articles/save/:id', (req, res) => {
-//   db.Article.findOneAndUpdate({_id: req.params.id}, {saved: true}, { new: true, useFindAndModify: false }) .then(function(dbArticle) {
-//     // If we were able to successfully update an Article, send it back to the client
-//     res.json(dbArticle);
-//   })
-//   .catch(function(err) {
-//     // If an error occurred, send it to the client
-//     res.json(err);
-//   });
-// });
+app.get("/saved", function(req, res) {
+  db.Article.find({"saved": true}).populate("notes").exec(function(error, articles) {
+    var hbsObject = {
+      article: articles
+    };
+    res.render("saved", hbsObject);
+  });
+});
 
 // HTML routes
 app.get('/', (req, res) => {
