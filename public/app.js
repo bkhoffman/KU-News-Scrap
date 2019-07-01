@@ -14,7 +14,7 @@ $.getJSON("/articles", (data) => {
 
       let cardBody = $("<div>").addClass("card-body");
       cardBody.text(data[i].summary);
-      console.log("summary: "+ data[i].summary)
+      // console.log("summary: "+ data[i].summary)
 
       let saveButton = $("<button>")
       saveButton.attr('data-id', data[i]._id);
@@ -35,6 +35,18 @@ $(document).on("click", "#scrape", function(){
     console.log(data);
   })
 })
+
+// Save Article button
+$(document).on("click", ".btn-saveArt", function() {
+  var thisId = $(this).attr("data-id");
+  console.log("Saved Articles button pushed" + thisId);
+  $.ajax({
+      method: "POST",
+      url: "/articles/save/" + thisId
+  }).done(function(data) {
+      window.location = "/"
+  })
+});
 
 // $(document).on("click", "#saved", function(){
 //   console.log("Saved Articles button pushed");

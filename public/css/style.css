@@ -9,10 +9,18 @@
   text-shadow: 2px 2px white;
   padding-top: 50px;
 }
+h1{
+  font-family: 'ChomskyRegular';
+  font-weight: bold;
+  font-size: 10ex;
+}
 /* 
 body{
   background-image: url(../images/KUbackground.jpg);
 } */
 .card {
   margin-bottom: 2%;
+}
+#clearAll{
+  float: right;
 }

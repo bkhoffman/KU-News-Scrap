@@ -37,7 +37,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 //Routes
 //GET route to scrape the KU website
-app.get("/scrape", (req, res) => {
+app.get('/scrape', (req, res) => {
   axios.get("http://www2.kusports.com/news/mens_basketball/").then(response => {
     console.log("res data: " +response.data);
     const $ = cheerio.load(response.data);
@@ -55,9 +55,8 @@ app.get("/scrape", (req, res) => {
           link: link
         });
       }
-      // Create a new Article using the `result` object built from scraping
     });
-
+    //add article to db
     db.Article.create(results)
       .then(function(dbArticle) {
         // View the added result in the console
@@ -74,7 +73,7 @@ app.get("/scrape", (req, res) => {
 })
 
 // Route for getting all Articles from the db
-app.get("/articles", function(req, res) {
+app.get('/articles', function(req, res) {
   // Grab every document in the Articles collection
   db.Article.find({})
     .then(function(dbArticle) {
@@ -88,7 +87,7 @@ app.get("/articles", function(req, res) {
 });
 
 // Clear the DB
-app.get("/clearall", function(req, res) {
+app.get('/clearall', function(req, res) {
   // Remove every note from the notes collection
   db.Article.remove({}, function(error, response) {
     // Log any errors to the console
@@ -100,10 +99,47 @@ app.get("/clearall", function(req, res) {
       // Otherwise, send the mongojs response to the browser
       // This will fire off the success function of the ajax request
       console.log(response);
-      res.send(response);
+      // res.send(response);
+      res.redirect("/");
     }
   });
 });
+
+//get all saved articles
+app.get('/articles/saved', (req, res) => {
+  db.Article.find({saved: true}).then(dbsavedArticle => {
+    res.json(dbsavedArticle);
+  })
+    .catch(function (err) {
+    res.json(err);
+  });
+});
+
+// Save an article
+app.post("/articles/save/:id", function(req, res) {
+  // Use the article id to find and update its saved boolean
+  db.Article.findOneAndUpdate({ "_id": req.params.id }, { "saved": true})
+  .then(function(dbArticle) {
+    // Log any errors
+    res.json(dbArticle);
+  })
+  .catch(function(err) {
+    // If an error occurred, send it to the client
+    res.json(err);
+  });
+});
+
+//save article route
+// app.get('/articles/save/:id', (req, res) => {
+//   db.Article.findOneAndUpdate({_id: req.params.id}, {saved: true}, { new: true, useFindAndModify: false }) .then(function(dbArticle) {
+//     // If we were able to successfully update an Article, send it back to the client
+//     res.json(dbArticle);
+//   })
+//   .catch(function(err) {
+//     // If an error occurred, send it to the client
+//     res.json(err);
+//   });
+// });
 
 // HTML routes
 app.get('/', (req, res) => {
