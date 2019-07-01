@@ -18,7 +18,6 @@ $.getJSON("/articles", (data) => {
 
       let saveButton = $("<button>")
       saveButton.attr('data-id', data[i]._id);
-      // saveButton.addClass("btn-saveArt").text("Save Article");
       saveButton.addClass("btn btn-success btn-saveArt").text("Save Article");
       saveButton.attr('data-test', 'test');
       
@@ -27,6 +26,7 @@ $.getJSON("/articles", (data) => {
   }
 })
 
+// Scrape website by using Button to send to /scrape page
 $(document).on("click", "#scrape", function(){
   console.log("Scraped button pushed");
   $.ajax({
@@ -39,7 +39,7 @@ $(document).on("click", "#scrape", function(){
 
 // Save Article button
 $(document).on("click", ".btn-saveArt", function() {
-  var thisId = $(this).attr("data-id");
+  let thisId = $(this).attr("data-id");
   console.log("Saved Articles button pushed" + thisId);
   $.ajax({
       method: "POST",
@@ -51,7 +51,7 @@ $(document).on("click", ".btn-saveArt", function() {
 
 // Delete Article button
 $(document).on("click", ".delete", function() {
-  var thisId = $(this).attr("data-id");
+  let thisId = $(this).attr("data-id");
   $.ajax({
       method: "POST",
       url: "/articles/delete/" + thisId

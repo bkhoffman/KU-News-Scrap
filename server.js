@@ -41,7 +41,7 @@ app.get('/scrape', (req, res) => {
   axios.get("http://www2.kusports.com/news/mens_basketball/").then(response => {
     console.log("res data: " +response.data);
     const $ = cheerio.load(response.data);
-    const results = []; //use {} for object
+    const results = []; 
 
     $(".story_list div.item").each(function(i, element){
       let title = $(element).children("h4").children("a").text();
@@ -75,7 +75,7 @@ app.get('/scrape', (req, res) => {
 // Route for getting all Articles from the db
 app.get('/articles', function(req, res) {
   // Grab every document in the Articles collection
-  db.Article.find({})
+  db.Article.find({"saved": false})
     .then(function(dbArticle) {
       // If we were able to successfully find Articles, send them back to the client
       res.json(dbArticle);
@@ -86,9 +86,9 @@ app.get('/articles', function(req, res) {
     });
 });
 
-// Clear the DB
+// Route to Clear the DB
 app.get('/clearall', function(req, res) {
-  // Remove every note from the notes collection
+  // Remove every article from the scrapped section
   db.Article.remove({}, function(error, response) {
     // Log any errors to the console
     if (error) {
@@ -96,10 +96,7 @@ app.get('/clearall', function(req, res) {
       res.send(error);
     }
     else {
-      // Otherwise, send the mongojs response to the browser
-      // This will fire off the success function of the ajax request
-      console.log(response);
-      // res.send(response);
+      //send back to the root page
       res.redirect("/");
     }
   });
@@ -129,19 +126,23 @@ app.post("/articles/save/:id", function(req, res) {
   });
 });
 
+// Find "saved" articles in db, populate with their notes, render to save handlebars page
 app.get("/saved", function(req, res) {
-  db.Article.find({"saved": true}).populate("notes").exec(function(error, articles) {
-    var hbsObject = {
-      article: articles
-    };
-    res.render("saved", hbsObject);
+  db.Article.find({"saved": true}).populate("notes")
+    .then(function(result){
+      res.render("saved", {article:result})
+    })
+    .catch(function(err) {
+      // If an error occurred, send it to the client
+      res.json(err);
+    });
   });
-});
+
 
 // Delete an article
 app.post("/articles/delete/:id", function(req, res) {
   // Use the article id to find and update its saved boolean
-  db.Article.findOneAndUpdate({ "_id": req.params.id }, {"saved": false, "notes": []})
+  db.Article.findOneAndUpdate({ _id: req.params.id }, {"saved": false, "notes": []})
   .then(function(dbArticle) {
     // Log any errors
     res.json(dbArticle);
@@ -155,10 +156,6 @@ app.post("/articles/delete/:id", function(req, res) {
 // HTML routes
 app.get('/', (req, res) => {
   res.render('index');
-});
-
-app.get('/saved', (req, res) => {
-  res.render('saved');
 });
 
 
