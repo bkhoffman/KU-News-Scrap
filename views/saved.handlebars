@@ -24,10 +24,9 @@
             </div>
             <div class="card-body">
               <p> {{this.summary}}</p>
-              
               <br>
-              <button type="button" class="btn btn-success addNote " id="myModal" data-toggle="modal"
-                data-target="#noteModal{{this._id}}" data-id={{this._id}}>View/Add Notes</button>
+              <button type="button" class="btn btn-success addNote" data-toggle="modal" data-target="#noteModal{{this._id}}"
+                data-id={{this._id}}>View/Add Notes</button>
               <button type="button" class="btn btn-danger delete" data-id={{this._id}}>Delete</button>
             </div>
           </div>
@@ -45,14 +44,14 @@
   </div>
 </div>
 
-{{!-- <!--Clicked Notes Modal-->
+<!--Clicked Notes Modal-->
 {{#each article}}
-    {{> notes-modal }}
-{{/each}} --}}
+{{> notes-modal }}
+{{/each}}
 
 
 {{!-- modal for displaying and creating notes --}}
-  <div id="noteModal" class="modal fade" role="dialog">
+{{!-- <div id="noteModal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-md">
       <div class="modal-content">
         <div class="modal-header">
@@ -70,5 +69,4 @@
         </div>
       </div>
     </div>
-  </div>
-
+  </div> --}}
