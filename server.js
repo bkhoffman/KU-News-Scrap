@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const exphbs = require('express-handlebars');
+var path = require("path");
 
 //require models
 const db = require("./models");
@@ -102,20 +103,10 @@ app.get('/clearall', function(req, res) {
   });
 });
 
-//get all saved articles
-app.get('/articles/saved', (req, res) => {
-  db.Article.find({saved: true}).then(dbsavedArticle => {
-    res.json(dbsavedArticle);
-  })
-    .catch(function (err) {
-    res.json(err);
-  });
-});
-
-// Save an article
+// Save an article by updating the "saved" boolean to true
 app.post("/articles/save/:id", function(req, res) {
   // Use the article id to find and update its saved boolean
-  db.Article.findOneAndUpdate({ "_id": req.params.id }, { "saved": true})
+  db.Article.findOneAndUpdate({ _id : req.params.id }, { "saved": true})
   .then(function(dbArticle) {
     // Log any errors
     res.json(dbArticle);
@@ -141,7 +132,7 @@ app.get("/saved", function(req, res) {
 
 // Delete an article
 app.post("/articles/delete/:id", function(req, res) {
-  // Use the article id to find and update its saved boolean
+  // Use the article id to find and update its saved boolean to false and empty notes array
   db.Article.findOneAndUpdate({ _id: req.params.id }, {"saved": false, "notes": []})
   .then(function(dbArticle) {
     // Log any errors
@@ -153,16 +144,70 @@ app.post("/articles/delete/:id", function(req, res) {
   });
 });
 
+// Create a new note
+app.post("/notes/save/:id", function(req, res) {
+  // Create a new note and pass the req.body to the entry
+  let newNote = new Note({
+    body: req.body.text,
+    article: req.params.id
+  });
+  console.log(req.body)
+  // And save the new note the db
+  newNote.create(function(err, note) {
+    // Log any errors
+    if (err) {
+      console.log(err);
+    }
+    // Otherwise
+    else {
+      // Use the article id to find and update it's notes
+      db.Article.findOneAndUpdate({ _id : req.params.id }, {$push: { "notes": note } })
+      .then(function(err) {
+        // Log any errors
+        if (err) {
+          console.log(err);
+          res.send(err);
+        }
+        else {
+          // Or send the note to the client
+          res.send(note);
+        }
+      });
+    }
+  });
+});
+
+// Delete a note
+app.delete("/notes/delete/:note_id/:article_id", function(req, res) {
+  // Use the note id to find and delete it
+  db.Note.findOneAndRemove({ _id : req.params.note_id }, function(err) {
+    // Log any errors
+    if (err) {
+      console.log(err);
+      res.send(err);
+    }
+    else {
+      db.Article.findOneAndUpdate({ _id : req.params.article_id }, {$pull: {"notes": req.params.note_id}})
+        .then(function(err) {
+          // Log any errors
+          if (err) {
+            console.log(err);
+            res.send(err);
+          }
+          else {
+            // Or send the note to the client
+            res.send("Note Deleted");
+          }
+        });
+    }
+  });
+});
+
+
 // HTML routes
 app.get('/', (req, res) => {
   res.render('index');
 });
-
-
-
-
-
-
 
 // Start the server
 app.listen(PORT, function() {

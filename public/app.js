@@ -59,3 +59,32 @@ $(document).on("click", ".delete", function() {
       window.location = "/saved"
   })
 });
+// Save Note button
+$(document).on("click", ".saveNote", function() {
+  var thisId = $(this).attr("data-id");
+  if (!$("#noteText" + thisId).val()) {
+      alert("please enter a note to save")
+  }else {
+    $.ajax({
+          method: "POST",
+          url: "/notes/save/" + thisId,
+          data: {
+            text: $("#noteText" + thisId).val()
+          }
+        }).done(function(data) {
+            // Log the response
+            console.log(data);
+            // Empty the notes section
+            $("#noteText" + thisId).val("");
+            $(".modalNote").modal("hide");
+            window.location = "/saved"
+        });
+  }
+});
+
+// Add Note button
+$(document).on("click", '.addNote', function() {
+  event.preventDefault();
+  console.log("add note clicked");
+  $('#noteModal').modal('show');
+});
