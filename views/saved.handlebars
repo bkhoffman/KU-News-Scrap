@@ -44,29 +44,7 @@
   </div>
 </div>
 
-<!--Clicked Notes Modal-->
+<!--Clicked notes modal-->
 {{#each article}}
-{{> notes-modal }}
+  {{> notes-modal }}
 {{/each}}
-
-
-{{!-- modal for displaying and creating notes --}}
-{{!-- <div id="noteModal" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-md">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title text-center">Add a note</h4>
-        </div>
-        <div class="modal-body">
-          <input type="text" id="noteTitleEntry" class="noteInput" placeholder="Enter Title">
-          <input type="text" id="noteBodyEntry" class="noteInput" placeholder="Enter Body">
-          <div id="noteArea"></div>
-        </div>
-        <div class="modal-footer">
-          <h5 class="instructions">Click the note to read it, or X to delete</h5>
-          <button type="button" id="submitNote">Save Note</button>
-        </div>
-      </div>
-    </div>
-  </div> --}}
