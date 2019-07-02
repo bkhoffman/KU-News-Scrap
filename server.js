@@ -10,8 +10,8 @@ var path = require("path");
 //require models
 const db = require("./models");
 
-const PORT = 3000 || process.env.PORT;
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+const PORT =  process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://user:Password1@ds129045.mlab.com:29045/heroku_9bzvvhnw";
 
 //initialize express
 const app = express();
